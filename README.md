@@ -10,6 +10,11 @@ Users can add todo items to their google calendar - **Feature idea**
 
 ![system-diagram](https://user-images.githubusercontent.com/50949770/200331073-a788d480-aec2-4d71-aade-d0d619be3ec5.svg)
 
+
+## API documentation
+
+http://small-things-to-do-api-spec.s3-website-us-east-1.amazonaws.com/
+
 ## Backend description and notes
 NestJS framework is used for the backend logic and services.
 
