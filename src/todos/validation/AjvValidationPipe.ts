@@ -5,17 +5,27 @@ import {
   PipeTransform,
 } from '@nestjs/common'
 import { JSONSchema7 } from 'json-schema'
-import ajv from 'ajv'
+import Ajv from 'ajv'
+
+type RequestSchemaTypes = {
+  body?: JSONSchema7
+  param?: JSONSchema7
+  query?: JSONSchema7
+  custom?: JSONSchema7
+}
 
 @Injectable()
 export class AjvValidationPipe implements PipeTransform {
-  constructor(private schema: JSONSchema7) {}
+  constructor(private schema: RequestSchemaTypes) {}
 
   transform(value: object, metadata: ArgumentMetadata) {
-    const isValid = new ajv().validate(value, this.schema)
+    const isValid = new Ajv().validate(this.schema[metadata.type]!, value)
 
     if (!isValid) {
-      throw new BadRequestException('Validation failed')
+      throw new BadRequestException(
+        `Validation failed for ${metadata.type}`,
+        value,
+      )
     }
 
     return value

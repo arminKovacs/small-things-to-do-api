@@ -1,6 +1,6 @@
 import { JSONSchema7 } from 'json-schema'
 
-export const createTodoBodySchema: JSONSchema7 = {
+export const todoBaseBodySchema: JSONSchema7 = {
   type: 'object',
   additionalProperties: false,
   required: ['title', 'dueDate'],
