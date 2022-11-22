@@ -16,6 +16,7 @@ export const todoBaseBodySchema: JSONSchema7 = {
     },
     dueDate: {
       type: 'string',
+      format: 'date-time'
     },
   },
 }

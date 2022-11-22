@@ -5,26 +5,20 @@ import {
   PipeTransform,
 } from '@nestjs/common'
 import { JSONSchema7 } from 'json-schema'
-import Ajv from 'ajv'
-
-type RequestSchemaTypes = {
-  body?: JSONSchema7
-  param?: JSONSchema7
-  query?: JSONSchema7
-  custom?: JSONSchema7
-}
+import ajv from 'ajv'
+import ajvAddFormat from 'ajv-formats'
 
 @Injectable()
 export class AjvValidationPipe implements PipeTransform {
-  constructor(private schema: RequestSchemaTypes) {}
+  constructor(private schema: JSONSchema7) {}
 
   transform(value: object, metadata: ArgumentMetadata) {
-    const isValid = new Ajv().validate(this.schema[metadata.type]!, value)
+    const isValid = ajvAddFormat(new ajv()).validate(this.schema, value)
 
     if (!isValid) {
       throw new BadRequestException(
         `Validation failed for ${metadata.type}`,
-        value,
+        JSON.stringify(value),
       )
     }
 

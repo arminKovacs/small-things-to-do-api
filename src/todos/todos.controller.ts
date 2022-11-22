@@ -1,56 +1,64 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UsePipes,
+  Get,
   HttpCode,
+  Param,
+  Patch,
+  Post,
 } from '@nestjs/common'
-import { TodosService } from './todos.service'
-import { TodoBaseDto } from './dto/todo-base.dto'
-import { AjvValidationPipe } from './validation/AjvValidationPipe'
+import { AjvValidationPipe } from '../pipes/AjvValidationPipe'
+import { TodoBaseBodyDto } from './dto/todo-base.dto'
+import { UserIdAndTodoIdPathDto } from './dto/user-and-todo-id.path.dto'
+import { UserIdPathDto } from './dto/user-id-path.dto'
 import { todoBaseBodySchema } from './schemas/todo-base.body.schema'
-import { todoIdPathSchema } from './schemas/todo-id.path.schema'
+import { userAndTodoIdPathSchema } from './schemas/user-and-todo-id.path.schema'
+import { userIdPathSchema } from './schemas/user-id.path.schema'
+import { TodosService } from './todos.service'
 
-@Controller('todos')
+@Controller('users/:userId/todos')
 export class TodosController {
-  constructor(private readonly todosService: TodosService) {}
+  constructor(private readonly todosService: TodosService) { }
 
   @Post()
   @HttpCode(201)
-  @UsePipes(new AjvValidationPipe({ body: todoBaseBodySchema }))
-  create(@Body() todoBaseDto: TodoBaseDto) {
+  create(
+    @Param(new AjvValidationPipe(userIdPathSchema)) params: UserIdPathDto,
+    @Body(new AjvValidationPipe(todoBaseBodySchema)) todoBaseDto: TodoBaseBodyDto,
+  ) {
     return this.todosService.create(todoBaseDto)
   }
 
   @Get()
-  findAll() {
-    return this.todosService.findAll()
+  findAll(
+    @Param(new AjvValidationPipe(userIdPathSchema)) params: UserIdPathDto,
+  ) {
+    return this.todosService.findAll(params.userId)
   }
 
   @Get(':todoId')
-  @UsePipes(new AjvValidationPipe({ param: todoIdPathSchema }))
-  findOne(@Param('userId') userId: string, @Param('todoId') todoId: string) {
-    return this.todosService.findOne(userId, todoId)
+  findOne(
+    @Param(new AjvValidationPipe(userAndTodoIdPathSchema))
+    params: UserIdAndTodoIdPathDto,
+  ) {
+    return this.todosService.findOne(params.userId, params.todoId)
   }
 
   @Patch(':todoId')
-  @UsePipes(
-    new AjvValidationPipe({
-      body: todoBaseBodySchema,
-      param: todoIdPathSchema,
-    }),
-  )
-  update(@Param('todoId') todoId: string, @Body() todoBaseDto: TodoBaseDto) {
-    return this.todosService.update(+todoId, todoBaseDto)
+  update(
+    @Param(new AjvValidationPipe(userAndTodoIdPathSchema))
+    params: UserIdAndTodoIdPathDto,
+    @Body(new AjvValidationPipe(todoBaseBodySchema)) todoBase: TodoBaseBodyDto,
+  ) {
+    return this.todosService.update(params.todoId, todoBase)
   }
 
   @Delete(':todoId')
-  @UsePipes(new AjvValidationPipe({ param: todoIdPathSchema }))
-  remove(@Param('todoId') todoId: string) {
-    return this.todosService.remove(+todoId)
+  remove(
+    @Param(new AjvValidationPipe(userAndTodoIdPathSchema))
+    params: UserIdAndTodoIdPathDto,
+  ) {
+    return this.todosService.remove(params.todoId)
   }
 }
