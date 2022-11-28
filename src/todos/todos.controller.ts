@@ -12,9 +12,9 @@ import { AjvValidationPipe } from '../pipes/AjvValidationPipe'
 import { TodoBaseBodyDto } from './dto/todo-base.dto'
 import { UserIdAndTodoIdPathDto } from './dto/user-and-todo-id.path.dto'
 import { UserIdPathDto } from './dto/user-id-path.dto'
-import { todoBaseBodySchema } from './schemas/todo-base.body.schema'
-import { userAndTodoIdPathSchema } from './schemas/user-and-todo-id.path.schema'
-import { userIdPathSchema } from './schemas/user-id.path.schema'
+import { todoBaseBodySchema } from './schemas/json-schemas/todo-base.body.schema'
+import { userAndTodoIdPathSchema } from './schemas/json-schemas/user-and-todo-id.path.schema'
+import { userIdPathSchema } from './schemas/json-schemas/user-id.path.schema'
 import { TodosService } from './todos.service'
 
 @Controller('users/:userId/todos')
@@ -25,9 +25,10 @@ export class TodosController {
   @HttpCode(201)
   create(
     @Param(new AjvValidationPipe(userIdPathSchema)) params: UserIdPathDto,
-    @Body(new AjvValidationPipe(todoBaseBodySchema)) todoBaseDto: TodoBaseBodyDto,
+    @Body(new AjvValidationPipe(todoBaseBodySchema))
+    todoBaseDto: TodoBaseBodyDto,
   ) {
-    return this.todosService.create(todoBaseDto)
+    return this.todosService.create(todoBaseDto, params.userId)
   }
 
   @Get()

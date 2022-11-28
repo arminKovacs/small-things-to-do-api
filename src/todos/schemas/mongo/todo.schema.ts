@@ -12,7 +12,7 @@ export class Todo {
   })
   title: string
 
-  @Prop({ maxlength: 30 })
+  @Prop({ maxlength: 300 })
   description: string
 
   @Prop({ required: true })

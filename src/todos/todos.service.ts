@@ -1,15 +1,14 @@
-import { Injectable } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import { Inject, Injectable } from '@nestjs/common'
+import { MongoDatabaseService } from 'src/services/mongo-database/mongo-database.service'
 import { TodoBaseBodyDto } from './dto/todo-base.dto'
-import { Todo, TodoDocument } from './schemas/todo.schema'
 
 @Injectable()
 export class TodosService {
-  constructor(@InjectModel(Todo.name) private todoModel: Model<TodoDocument>) { }
+  constructor(private readonly databaseService: MongoDatabaseService) { }
 
-  create(createTodoDto: TodoBaseBodyDto) {
-    return 'This action adds a new todo'
+  create(createTodoDto: TodoBaseBodyDto, userId: string) {
+    const createdTodo = this.databaseService.createTodo(createTodoDto, userId)
+    return createdTodo
   }
 
   findAll(userId: string) {
