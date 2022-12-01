@@ -3,7 +3,7 @@ import { HydratedDocument, Schema as SchemaClass } from 'mongoose'
 
 export type TodoDocument = HydratedDocument<Todo>
 
-@Schema()
+@Schema({ versionKey: false })
 export class Todo {
   @Prop({
     required: true,
@@ -15,14 +15,23 @@ export class Todo {
   @Prop({ maxlength: 300 })
   description: string
 
-  @Prop({ required: true })
-  dueDate: SchemaClass.Types.Date
+  @Prop({
+    required: true,
+    type: SchemaClass.Types.Date,
+  })
+  dueDate: Date
 
-  @Prop({ required: true })
-  creationDate: SchemaClass.Types.Date
+  @Prop({
+    required: true,
+    type: SchemaClass.Types.Date,
+  })
+  creationDate: Date
 
   @Prop({ required: true })
   owner: string
 }
 
-export const TodoSchema = SchemaFactory.createForClass(Todo)
+export const TodoSchema = SchemaFactory.createForClass(Todo).index(
+  { title: 1 },
+  { unique: true },
+)

@@ -1,13 +1,29 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { MongoDatabaseService } from 'src/services/mongo-database/mongo-database.service'
-import { TodoBaseBodyDto } from './dto/todo-base.dto'
+import { TodoBaseBodyDto } from './types/dto/todo-base.dto'
 
 @Injectable()
 export class TodosService {
-  constructor(private readonly databaseService: MongoDatabaseService) { }
+  constructor(private readonly databaseService: MongoDatabaseService) {}
 
-  create(createTodoDto: TodoBaseBodyDto, userId: string) {
-    const createdTodo = this.databaseService.createTodo(createTodoDto, userId)
+  async create(todoBase: TodoBaseBodyDto, userId: string) {
+    const createdTodo = await this.databaseService
+      .createTodo(todoBase, userId)
+      .catch((error) => {
+        console.log(error)
+        if (error.code === 11000) {
+          throw new HttpException(
+            'Todo item already exists with this title.',
+            HttpStatus.CONFLICT,
+          )
+        }
+
+        throw new HttpException(
+          'Mongo database error.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        )
+      })
+
     return createdTodo
   }
 
@@ -15,8 +31,25 @@ export class TodosService {
     return `This action returns all todos for user ${userId}`
   }
 
-  findOne(userId: string, todoId: string) {
-    return `This action returns a #${todoId} todo for user ${userId}`
+  async findOne(todoId: string) {
+    const result = await this.databaseService
+      .findUsersTodo(todoId)
+      .catch((error) => {
+        console.log(error)
+        throw new HttpException(
+          'Mongo database error.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        )
+      })
+
+    if (!result) {
+      throw new HttpException(
+        `Todo item does not exist with id ${todoId}.`,
+        HttpStatus.NOT_FOUND,
+      )
+    }
+
+    return result
   }
 
   update(id: string, todoBaseDto: TodoBaseBodyDto) {

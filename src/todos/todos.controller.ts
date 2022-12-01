@@ -9,17 +9,17 @@ import {
   Post,
 } from '@nestjs/common'
 import { AjvValidationPipe } from '../pipes/AjvValidationPipe'
-import { TodoBaseBodyDto } from './dto/todo-base.dto'
-import { UserIdAndTodoIdPathDto } from './dto/user-and-todo-id.path.dto'
-import { UserIdPathDto } from './dto/user-id-path.dto'
-import { todoBaseBodySchema } from './schemas/json-schemas/todo-base.body.schema'
-import { userAndTodoIdPathSchema } from './schemas/json-schemas/user-and-todo-id.path.schema'
-import { userIdPathSchema } from './schemas/json-schemas/user-id.path.schema'
+import { TodoBaseBodyDto } from './types/dto/todo-base.dto'
+import { UserIdAndTodoIdPathDto } from './types/dto/user-and-todo-id.path.dto'
+import { UserIdPathDto } from './types/dto/user-id-path.dto'
+import { todoBaseBodySchema } from './types/schemas/json-schemas/todo-base.body.schema'
+import { userAndTodoIdPathSchema } from './types/schemas/json-schemas/user-and-todo-id.path.schema'
+import { userIdPathSchema } from './types/schemas/json-schemas/user-id.path.schema'
 import { TodosService } from './todos.service'
 
 @Controller('users/:userId/todos')
 export class TodosController {
-  constructor(private readonly todosService: TodosService) { }
+  constructor(private readonly todosService: TodosService) {}
 
   @Post()
   @HttpCode(201)
@@ -43,7 +43,7 @@ export class TodosController {
     @Param(new AjvValidationPipe(userAndTodoIdPathSchema))
     params: UserIdAndTodoIdPathDto,
   ) {
-    return this.todosService.findOne(params.userId, params.todoId)
+    return this.todosService.findOne(params.todoId)
   }
 
   @Patch(':todoId')
