@@ -6,9 +6,9 @@ import { Todo, TodoDocument } from 'src/todos/types/schemas/mongo/todo.schema'
 
 @Injectable()
 export class MongoDatabaseService {
-  constructor(@InjectModel(Todo.name) private todoModel: Model<TodoDocument>) {}
+  constructor(@InjectModel(Todo.name) private todoModel: Model<TodoDocument>) { }
 
-  async createTodo(todoBase: TodoBaseBodyDto, owner: string): Promise<Todo> {
+  async createTodo(todoBase: TodoBaseBodyDto, owner: string): Promise<TodoDocument> {
     const creationDate = new Date()
     const createdTodo = new this.todoModel({ ...todoBase, owner, creationDate })
 

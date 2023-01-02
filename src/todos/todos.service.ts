@@ -4,13 +4,12 @@ import { TodoBaseBodyDto } from './types/dto/todo-base.dto'
 
 @Injectable()
 export class TodosService {
-  constructor(private readonly databaseService: MongoDatabaseService) {}
+  constructor(private readonly databaseService: MongoDatabaseService) { }
 
   async create(todoBase: TodoBaseBodyDto, userId: string) {
     const createdTodo = await this.databaseService
       .createTodo(todoBase, userId)
       .catch((error) => {
-        console.log(error)
         if (error.code === 11000) {
           throw new HttpException(
             'Todo item already exists with this title.',
