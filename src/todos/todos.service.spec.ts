@@ -13,13 +13,14 @@ describe('TodosService', () => {
   const now = new Date()
   const oneDayFromNow = new Date(Date.now() + 86400000)
   const userId = 'test@testmail.com'
+  const todoId = '6391f0543d1e59d387b67f66'
   const todoBase: TodoBaseBodyDto = {
     description: 'Take the trash from the kitchen to the trash compactor',
     title: 'Take out the trash',
     dueDate: oneDayFromNow.toISOString()
   }
   const testResponseDocument = {
-    _id: new Types.ObjectId('6391f0543d1e59d387b67f66'),
+    _id: new Types.ObjectId(todoId),
     title: 'Take out the trash',
     description: 'Take the trash from the kitchen to the trash compactor',
     owner: userId,
@@ -73,5 +74,33 @@ describe('TodosService', () => {
       })
     })
 
+  })
+
+  describe('Find one', () => {
+    it('should return a todo on successfull request', async () => {
+      jest.spyOn(databaseService, 'findUsersTodo').mockResolvedValue(testResponseDocument)
+
+      const result = await service.findOne(todoId)
+
+      expect(result).toEqual(testResponseDocument)
+    })
+
+    it('should throw error if todo is not found', async () => {
+      jest.spyOn(databaseService, 'findUsersTodo').mockResolvedValue(null)
+
+      await service.findOne(todoId).catch(error => {
+        expect(error.response).toBe(`Todo item does not exist with id ${todoId}.`)
+        expect(error.status).toBe(404)
+      })
+    })
+
+    it('should throw error on Mongo database error', async () => {
+      jest.spyOn(databaseService, 'createTodo').mockRejectedValue('This is a mongo error')
+
+      await service.create(todoBase, userId).catch(error => {
+        expect(error.response).toBe('Mongo database error.')
+        expect(error.status).toBe(500)
+      })
+    })
   })
 })
