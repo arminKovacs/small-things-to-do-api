@@ -36,7 +36,7 @@ export class TodosService {
 
   async findOne(todoId: string) {
     const result = await this.databaseService
-      .findUsersTodo(todoId)
+      .findTodo(todoId)
       .catch((error) => {
         console.log(error)
         throw new HttpException(
@@ -57,7 +57,7 @@ export class TodosService {
 
   async update(todoId: string, todoBase: TodoBaseBodyDto) {
     const originalTodo = await this.databaseService
-      .findUsersTodo(todoId)
+      .findTodo(todoId)
       .catch((error) => {
         console.log(error)
         throw new HttpException(
@@ -79,6 +79,13 @@ export class TodosService {
       .updateTodo(todoBase, todoId)
       .catch((error) => {
         console.log(error)
+        if (error.code === 11000) {
+          throw new HttpException(
+            'Todo item already exists with this title.',
+            HttpStatus.CONFLICT,
+          )
+        }
+
         throw new HttpException(
           'Mongo database error while updating todo item.',
           HttpStatus.INTERNAL_SERVER_ERROR,

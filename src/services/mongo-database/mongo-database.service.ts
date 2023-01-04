@@ -27,7 +27,7 @@ export class MongoDatabaseService {
     })
   }
 
-  async findUsersTodo(_id: string): Promise<Todo | null> {
+  async findTodo(_id: string): Promise<Todo | null> {
     const todo = await this.todoModel.findById({ _id }).lean().exec()
 
     return todo
