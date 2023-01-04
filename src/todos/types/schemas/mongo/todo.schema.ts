@@ -19,13 +19,13 @@ export class Todo {
     required: true,
     type: SchemaClass.Types.Date,
   })
-  dueDate: Date
+  dueDate: string
 
   @Prop({
     required: true,
     type: SchemaClass.Types.Date,
   })
-  creationDate: Date
+  creationDate: string
 
   @Prop({ required: true })
   owner: string
