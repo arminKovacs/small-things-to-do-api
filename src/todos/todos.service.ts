@@ -95,7 +95,24 @@ export class TodosService {
     return result
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} todo`
+  async remove(todoId: string) {
+    const result = await this.databaseService
+      .deleteTodo(todoId)
+      .catch((error) => {
+        console.log(error)
+        throw new HttpException(
+          'Mongo database error while retrieving todo item.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        )
+      })
+
+    if (!result) {
+      throw new HttpException(
+        `Todo item does not exist with id ${todoId}.`,
+        HttpStatus.NOT_FOUND,
+      )
+    }
+
+    return result
   }
 }

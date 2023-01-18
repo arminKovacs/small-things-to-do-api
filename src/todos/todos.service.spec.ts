@@ -190,4 +190,37 @@ describe('TodosService', () => {
       })
     })
   })
+  describe('Delete', () => {
+    it('should return deleted todo on successfull request', async () => {
+      jest
+        .spyOn(databaseService, 'deleteTodo')
+        .mockResolvedValue(testResponseDocument)
+
+      const result = await service.remove(todoId)
+
+      expect(result).toEqual(testResponseDocument)
+    })
+
+    it('should throw error if todo is not found', async () => {
+      jest.spyOn(databaseService, 'deleteTodo').mockResolvedValue(null)
+
+      await service.remove(todoId).catch((error) => {
+        expect(error.response).toBe(
+          `Todo item does not exist with id ${todoId}.`,
+        )
+        expect(error.status).toBe(404)
+      })
+    })
+
+    it('should throw error on Mongo database error', async () => {
+      jest
+        .spyOn(databaseService, 'deleteTodo')
+        .mockRejectedValue('This is a mongo error')
+
+      await service.remove(todoId).catch((error) => {
+        expect(error.response).toBe('Mongo database error while retrieving todo item.')
+        expect(error.status).toBe(500)
+      })
+    })
+  })
 })

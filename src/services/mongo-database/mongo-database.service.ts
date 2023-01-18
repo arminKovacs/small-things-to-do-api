@@ -24,12 +24,16 @@ export class MongoDatabaseService {
   ): Promise<TodoDocument | null> {
     return await this.todoModel.findByIdAndUpdate(todoId, todoBase, {
       new: true,
-    })
+    }).exec()
   }
 
   async findTodo(_id: string): Promise<Todo | null> {
     const todo = await this.todoModel.findById({ _id }).lean().exec()
 
     return todo
+  }
+
+  async deleteTodo(_id: string): Promise<Todo | null> {
+    return await this.todoModel.findByIdAndDelete({ _id }).lean().exec()
   }
 }

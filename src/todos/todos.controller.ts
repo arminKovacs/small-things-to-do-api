@@ -53,6 +53,7 @@ export class TodosController {
   }
 
   @Delete(':todoId')
+  @HttpCode(204)
   remove(
     @Param(new AjvValidationPipe(todoIdPathSchema))
     params: TodoIdPathDto,
