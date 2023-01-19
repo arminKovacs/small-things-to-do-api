@@ -33,6 +33,12 @@ export class MongoDatabaseService {
     return todo
   }
 
+  async findUsersTodo(owner: string): Promise<Todo[] | null> {
+    const todos = await this.todoModel.find({ owner }).exec()
+
+    return todos
+  }
+
   async deleteTodo(_id: string): Promise<Todo | null> {
     return await this.todoModel.findByIdAndDelete({ _id }).lean().exec()
   }

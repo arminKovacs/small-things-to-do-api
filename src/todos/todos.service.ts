@@ -30,8 +30,18 @@ export class TodosService {
     return createdTodo
   }
 
-  findAll(userId: string) {
-    return `This action returns all todos for user ${userId}`
+  async findAll(userId: string) {
+    const result = await this.databaseService
+      .findUsersTodo(userId)
+      .catch((error) => {
+        console.log(error)
+        throw new HttpException(
+          'Mongo database error while retrieving todo items.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        )
+      })
+
+    return result
   }
 
   async findOne(todoId: string) {

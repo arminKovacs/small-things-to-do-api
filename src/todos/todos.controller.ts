@@ -33,7 +33,7 @@ export class TodosController {
   @Get()
   findAll() {
     //TODO retrieve email from JWT token instead of hardcoding
-    return this.todosService.findAll('test@testmail.com')
+    return this.todosService.findAll('test@gmail.com')
   }
 
   @Get(':todoId')

@@ -157,6 +157,29 @@ describe('TodosService', () => {
     })
   })
 
+  describe('Find user\s todos', () => {
+    it('should return todo on successfull request', async () => {
+      jest
+        .spyOn(databaseService, 'findUsersTodo')
+        .mockResolvedValue([testResponseDocument])
+
+      const result = await service.findAll(userId)
+
+      expect(result).toEqual([testResponseDocument])
+    })
+
+    it('should throw error on Mongo database error', async () => {
+      jest
+        .spyOn(databaseService, 'findUsersTodo')
+        .mockRejectedValue('This is a mongo error')
+
+      await service.findAll(userId).catch((error) => {
+        expect(error.response).toBe('Mongo database error while retrieving todo items.')
+        expect(error.status).toBe(500)
+      })
+    })
+  })
+
   describe('Find one', () => {
     it('should return todo on successfull request', async () => {
       jest
@@ -190,6 +213,7 @@ describe('TodosService', () => {
       })
     })
   })
+
   describe('Delete', () => {
     it('should return deleted todo on successfull request', async () => {
       jest
