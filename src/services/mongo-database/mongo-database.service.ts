@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model, Types } from 'mongoose'
-import { TodoBaseBodyDto } from 'src/todos/types/dto/todo-base.dto'
-import { Todo, TodoDocument } from 'src/todos/types/schemas/mongo/todo.schema'
+import { Todo, TodoDocument } from 'src/types/schemas/mongo/todo.schema'
+import { TodoBaseBodyDto } from 'src/types/dto/todo-base.dto'
 
 type TodoReturnType = Todo & { _id: Types.ObjectId }
 

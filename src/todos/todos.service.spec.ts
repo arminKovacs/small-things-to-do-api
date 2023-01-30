@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { Types } from 'mongoose'
 import { MongoDatabaseService } from 'src/services/mongo-database/mongo-database.service'
 import { TodosService } from './todos.service'
-import { TodoBaseBodyDto } from './types/dto/todo-base.dto'
-import { Todo, TodoDocument } from './types/schemas/mongo/todo.schema'
+import { TodoBaseBodyDto } from '../types/dto/todo-base.dto'
+import { Todo, TodoDocument } from '../types/schemas/mongo/todo.schema'
 
 describe('TodosService', () => {
   let service: TodosService
