@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import { Model, Types } from 'mongoose'
 import { TodoBaseBodyDto } from 'src/todos/types/dto/todo-base.dto'
 import { Todo, TodoDocument } from 'src/todos/types/schemas/mongo/todo.schema'
+
+type TodoReturnType = Todo & { _id: Types.ObjectId }
 
 @Injectable()
 export class MongoDatabaseService {
@@ -11,7 +13,7 @@ export class MongoDatabaseService {
   async createTodo(
     todoBase: TodoBaseBodyDto,
     owner: string,
-  ): Promise<TodoDocument> {
+  ): Promise<TodoReturnType> {
     const creationDate = new Date()
     const createdTodo = new this.todoModel({ ...todoBase, owner, creationDate })
 
@@ -21,25 +23,27 @@ export class MongoDatabaseService {
   async updateTodo(
     todoBase: TodoBaseBodyDto,
     todoId: string,
-  ): Promise<TodoDocument | null> {
+  ): Promise<TodoReturnType | null> {
     return await this.todoModel.findByIdAndUpdate(todoId, todoBase, {
       new: true,
-    }).exec()
+    }).lean().exec()
   }
 
-  async findTodo(_id: string): Promise<Todo | null> {
-    const todo = await this.todoModel.findById({ _id }).lean().exec()
+  async findTodo(_id: string): Promise<TodoReturnType | null> {
+    const todo = await this.todoModel.findById(_id).lean().exec()
 
     return todo
   }
 
-  async findUsersTodo(owner: string): Promise<Todo[] | null> {
-    const todos = await this.todoModel.find({ owner }).exec()
+  async findUsersTodo(owner: string): Promise<TodoReturnType[] | null> {
+    const todos = await this.todoModel.find({ owner }).lean().exec()
 
     return todos
   }
 
-  async deleteTodo(_id: string): Promise<Todo | null> {
-    return await this.todoModel.findByIdAndDelete({ _id }).lean().exec()
+  async deleteTodo(_id: string): Promise<TodoReturnType | null> {
+    return await this.todoModel.findByIdAndDelete(_id).lean().exec()
   }
+
+
 }
