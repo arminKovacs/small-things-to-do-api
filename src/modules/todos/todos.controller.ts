@@ -8,17 +8,17 @@ import {
   Patch,
   Post,
 } from '@nestjs/common'
-import { AjvValidationPipe } from '../pipes/AjvValidationPipe'
-import { TodoBaseBodyDto } from '../types/dto/todo-base.dto'
-import { TodoIdPathDto } from '../types/dto/todo-id.path.dto'
-import { todoBaseBodySchema } from '../types/schemas/json-schemas/todo-base.body.schema'
+import { AjvValidationPipe } from '../../pipes/AjvValidationPipe'
+import { TodoBaseBodyDto } from '../../types/dto/todo-base.dto'
+import { TodoIdPathDto } from '../../types/dto/todo-id.path.dto'
+import { todoBaseBodySchema } from '../../types/schemas/json-schemas/todo-base.body.schema'
 import { TodosService } from './todos.service'
-import { todoIdPathSchema } from '../types/schemas/json-schemas/todo-id.path.schema'
-import { updateTodoBaseBodySchema } from '../types/schemas/json-schemas/update-todo-base,body.schema'
+import { todoIdPathSchema } from '../../types/schemas/json-schemas/todo-id.path.schema'
+import { updateTodoBaseBodySchema } from '../../types/schemas/json-schemas/update-todo-base,body.schema'
 
 @Controller('/todos')
 export class TodosController {
-  constructor(private readonly todosService: TodosService) { }
+  constructor(private readonly todosService: TodosService) {}
 
   @Post()
   @HttpCode(201)
@@ -47,7 +47,8 @@ export class TodosController {
   @Patch(':todoId')
   update(
     @Param(new AjvValidationPipe(todoIdPathSchema)) params: TodoIdPathDto,
-    @Body(new AjvValidationPipe(updateTodoBaseBodySchema)) todoBase: TodoBaseBodyDto,
+    @Body(new AjvValidationPipe(updateTodoBaseBodySchema))
+    todoBase: TodoBaseBodyDto,
   ) {
     return this.todosService.update(params.todoId, todoBase)
   }

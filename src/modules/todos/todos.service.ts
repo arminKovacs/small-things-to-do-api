@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { MongoDatabaseService } from 'src/services/mongo-database/mongo-database.service'
 import { dateChecker } from 'src/utilities/helper-functions'
-import { TodoBaseBodyDto } from '../types/dto/todo-base.dto'
+import { TodoBaseBodyDto } from '../../types/dto/todo-base.dto'
 
 @Injectable()
 export class TodosService {
-  constructor(private readonly databaseService: MongoDatabaseService) { }
+  constructor(private readonly databaseService: MongoDatabaseService) {}
 
   async create(todoBase: TodoBaseBodyDto, userId: string) {
     dateChecker(todoBase.dueDate)

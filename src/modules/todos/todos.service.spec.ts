@@ -3,8 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { Types } from 'mongoose'
 import { MongoDatabaseService } from 'src/services/mongo-database/mongo-database.service'
 import { TodosService } from './todos.service'
-import { TodoBaseBodyDto } from '../types/dto/todo-base.dto'
-import { Todo, TodoDocument } from '../types/schemas/mongo/todo.schema'
+import { TodoBaseBodyDto } from '../../types/dto/todo-base.dto'
+import { Todo, TodoDocument } from '../../types/schemas/mongo/todo.schema'
 
 describe('TodosService', () => {
   let service: TodosService
@@ -21,7 +21,7 @@ describe('TodosService', () => {
   }
   const faultyTodoBase = {
     ...todoBase,
-    dueDate: new Date(Date.now() - 86400000).toISOString()
+    dueDate: new Date(Date.now() - 86400000).toISOString(),
   }
   const testResponseDocument = {
     _id: new Types.ObjectId(todoId),
@@ -86,7 +86,9 @@ describe('TodosService', () => {
         .mockRejectedValue('This is a mongo error')
 
       await service.create(todoBase, userId).catch((error) => {
-        expect(error.response).toBe('Mongo database error while creating todo item.')
+        expect(error.response).toBe(
+          'Mongo database error while creating todo item.',
+        )
         expect(error.status).toBe(500)
       })
     })
@@ -137,7 +139,9 @@ describe('TodosService', () => {
         .mockRejectedValue('This is a mongo error')
 
       await service.update(todoId, todoBase).catch((error) => {
-        expect(error.response).toBe('Mongo database error while retrieving todo item.')
+        expect(error.response).toBe(
+          'Mongo database error while retrieving todo item.',
+        )
         expect(error.status).toBe(500)
       })
     })
@@ -151,13 +155,15 @@ describe('TodosService', () => {
         .mockRejectedValue('This is a mongo error')
 
       await service.update(todoId, todoBase).catch((error) => {
-        expect(error.response).toBe('Mongo database error while updating todo item.')
+        expect(error.response).toBe(
+          'Mongo database error while updating todo item.',
+        )
         expect(error.status).toBe(500)
       })
     })
   })
 
-  describe('Find user\s todos', () => {
+  describe('Find users todos', () => {
     it('should return todo on successfull request', async () => {
       jest
         .spyOn(databaseService, 'findUsersTodo')
@@ -174,7 +180,9 @@ describe('TodosService', () => {
         .mockRejectedValue('This is a mongo error')
 
       await service.findAll(userId).catch((error) => {
-        expect(error.response).toBe('Mongo database error while retrieving todo items.')
+        expect(error.response).toBe(
+          'Mongo database error while retrieving todo items.',
+        )
         expect(error.status).toBe(500)
       })
     })
@@ -208,7 +216,9 @@ describe('TodosService', () => {
         .mockRejectedValue('This is a mongo error')
 
       await service.findOne(todoId).catch((error) => {
-        expect(error.response).toBe('Mongo database error while retrieving todo item.')
+        expect(error.response).toBe(
+          'Mongo database error while retrieving todo item.',
+        )
         expect(error.status).toBe(500)
       })
     })
@@ -242,7 +252,9 @@ describe('TodosService', () => {
         .mockRejectedValue('This is a mongo error')
 
       await service.remove(todoId).catch((error) => {
-        expect(error.response).toBe('Mongo database error while retrieving todo item.')
+        expect(error.response).toBe(
+          'Mongo database error while retrieving todo item.',
+        )
         expect(error.status).toBe(500)
       })
     })
