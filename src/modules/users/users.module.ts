@@ -4,17 +4,16 @@ import { User, UserSchema } from 'src/types/schemas/mongo/users.schema'
 import { UsersService } from './users.service'
 import { UsersController } from './users.controller'
 import { MongoDatabaseService } from 'src/services/mongo-database/mongo-database.service'
-import { TodosModule } from '../todos/todos.module'
 import { Todo, TodoSchema } from 'src/types/schemas/mongo/todo.schema'
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Todo.name, schema: TodoSchema },
-      { name: User.name, schema: UserSchema }
-    ])
+      { name: User.name, schema: UserSchema },
+    ]),
   ],
   controllers: [UsersController],
   providers: [UsersService, MongoDatabaseService],
 })
-export class UsersModule { }
+export class UsersModule {}

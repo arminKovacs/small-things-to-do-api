@@ -27,9 +27,9 @@ export class UsersService {
     return createdUser
   }
 
-  async findUser(userId: string) {
+  async findUser(userName: string) {
     const querriedUser = await this.databaseService
-      .findUser(userId)
+      .findUser(userName)
       .catch((error) => {
         console.log(error)
         throw new HttpException(
@@ -40,7 +40,7 @@ export class UsersService {
 
     if (!querriedUser) {
       throw new HttpException(
-        `User does not exist with id ${userId}.`,
+        `Wrong email or user does not exist.`,
         HttpStatus.NOT_FOUND,
       )
     }

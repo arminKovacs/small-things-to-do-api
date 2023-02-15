@@ -3,12 +3,11 @@ import { JSONSchema7 } from 'json-schema'
 export const userBaseBodySchema: JSONSchema7 = {
   type: 'object',
   additionalProperties: false,
-  required: ['userName', 'password'],
+  required: ['username', 'password'],
   properties: {
-    userName: {
+    username: {
       type: 'string',
-      minLength: 3,
-      maxLength: 20,
+      format: 'email',
     },
     password: {
       type: 'string',

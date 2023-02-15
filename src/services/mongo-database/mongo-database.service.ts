@@ -19,7 +19,7 @@ export class MongoDatabaseService {
   constructor(
     @InjectModel(Todo.name) private todoModel: Model<TodoDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-  ) { }
+  ) {}
 
   async createTodo(
     todoBase: TodoBaseBodyDto,
@@ -65,9 +65,8 @@ export class MongoDatabaseService {
     return await createdUser.save()
   }
 
-  async findUser(_id: string): Promise<UserLeanDocument | null> {
-    const user = await this.userModel.findById(_id).lean().exec()
-
+  async findUser(userName: string): Promise<UserLeanDocument | null> {
+    const user = await this.userModel.findOne({ userName }).lean().exec()
     return user
   }
 }

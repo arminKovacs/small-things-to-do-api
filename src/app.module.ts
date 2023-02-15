@@ -4,6 +4,7 @@ import { TodosModule } from './modules/todos/todos.module'
 import { AppConfigurationModule } from './infrastructure/configuration/app-configuration.module'
 import { AppConfigurationService } from './infrastructure/configuration/app-configuration.service'
 import { UsersModule } from './modules/users/users.module'
+import { AuthModule } from './modules/auth/auth.module'
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UsersModule } from './modules/users/users.module'
     }),
     TodosModule,
     UsersModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
