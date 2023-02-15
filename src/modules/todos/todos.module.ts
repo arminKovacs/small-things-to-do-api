@@ -16,4 +16,4 @@ import { User, UserSchema } from 'src/types/schemas/mongo/users.schema'
   controllers: [TodosController],
   providers: [TodosService, MongoDatabaseService],
 })
-export class TodosModule {}
+export class TodosModule { }

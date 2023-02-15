@@ -9,14 +9,16 @@ import { UsersService } from 'src/modules/users/users.service'
 import { Todo, TodoSchema } from 'src/types/schemas/mongo/todo.schema'
 import { User, UserSchema } from 'src/types/schemas/mongo/users.schema'
 import { AuthService } from './auth.service'
-import { LocalStrategy } from './local.auth'
+import { LocalStrategy } from './strategies/local.strategy'
 import { AuthController } from './auth.controller'
 import { MongoDatabaseService } from 'src/services/mongo-database/mongo-database.service'
+import { JwtStrategy } from './strategies/jwt.strategy'
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
+    AppConfigurationModule,
     JwtModule.registerAsync({
       imports: [AppConfigurationModule],
       inject: [AppConfigurationService],
@@ -30,7 +32,7 @@ import { MongoDatabaseService } from 'src/services/mongo-database/mongo-database
       { name: User.name, schema: UserSchema },
     ]),
   ],
-  providers: [AuthService, UsersService, LocalStrategy, MongoDatabaseService],
+  providers: [AuthService, UsersService, LocalStrategy, JwtStrategy, MongoDatabaseService],
   controllers: [AuthController],
 })
-export class AuthModule {}
+export class AuthModule { }

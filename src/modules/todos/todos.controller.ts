@@ -7,6 +7,8 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
+  Request
 } from '@nestjs/common'
 import { AjvValidationPipe } from '../../pipes/AjvValidationPipe'
 import { TodoBaseBodyDto } from '../../types/dto/todo-base.dto'
@@ -15,10 +17,11 @@ import { todoBaseBodySchema } from '../../types/schemas/json-schemas/todo-base.b
 import { TodosService } from './todos.service'
 import { todoIdPathSchema } from '../../types/schemas/json-schemas/todo-id.path.schema'
 import { updateTodoBaseBodySchema } from '../../types/schemas/json-schemas/update-todo-base,body.schema'
+import { AuthGuard } from '@nestjs/passport'
 
 @Controller('/todos')
 export class TodosController {
-  constructor(private readonly todosService: TodosService) {}
+  constructor(private readonly todosService: TodosService) { }
 
   @Post()
   @HttpCode(201)
@@ -30,10 +33,13 @@ export class TodosController {
     return this.todosService.create(todoBaseDto, 'test@testmail.com')
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
-  findAll() {
-    //TODO retrieve email from JWT token instead of hardcoding
-    return this.todosService.findAll('test@gmail.com')
+  findAll(
+    @Request() req: any
+  ) {
+    console.log(req.user)
+    return this.todosService.findAll(req.user.username)
   }
 
   @Get(':todoId')
