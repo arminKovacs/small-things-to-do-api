@@ -11,6 +11,7 @@ export const userBaseBodySchema: JSONSchema7 = {
     },
     password: {
       type: 'string',
+      maxLength: 50,
     },
   },
 }

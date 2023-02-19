@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config'
 export class AppConfigurationService {
   private readonly _connectionString: string
   private readonly _jwtSecretString: string
+  private readonly _jwtRefreshSecretString: string
 
   get connectionString(): string {
     return this._connectionString
@@ -12,13 +13,17 @@ export class AppConfigurationService {
   get jwtSecretString(): string {
     return this._jwtSecretString
   }
-
-  constructor(private readonly _configService: ConfigService) {
-    this._connectionString = this._getEnvConnectionStringFromFile()
-    this._jwtSecretString = this._getEnvJwtSecretStringFromFile()
+  get jwtRefreshSecretString(): string {
+    return this._jwtRefreshSecretString
   }
 
-  private _getEnvConnectionStringFromFile(): string {
+  constructor(private readonly _configService: ConfigService) {
+    this._connectionString = this.getEnvConnectionStringFromFile()
+    this._jwtSecretString = this.getEnvJwtSecretStringFromFile()
+    this._jwtRefreshSecretString = this.getEnvJwtRefreshSecretStringFromFile()
+  }
+
+  private getEnvConnectionStringFromFile(): string {
     const connectionString =
       this._configService.get<string>('MONGODB_CONNECTION')
 
@@ -31,7 +36,7 @@ export class AppConfigurationService {
     return connectionString
   }
 
-  private _getEnvJwtSecretStringFromFile(): string {
+  private getEnvJwtSecretStringFromFile(): string {
     const jwtSecret = this._configService.get<string>('JWT_SECRET')
 
     if (!jwtSecret) {
@@ -39,5 +44,18 @@ export class AppConfigurationService {
     }
 
     return jwtSecret
+  }
+
+  private getEnvJwtRefreshSecretStringFromFile(): string {
+    const jwtRefreshSecret =
+      this._configService.get<string>('JWT_REFRESH_SECRET')
+
+    if (!jwtRefreshSecret) {
+      throw new Error(
+        'No JWT refresh string has been provided in the .env file.',
+      )
+    }
+
+    return jwtRefreshSecret
   }
 }

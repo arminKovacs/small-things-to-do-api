@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { MongoDatabaseService } from 'src/services/mongo-database/mongo-database.service'
+import { MongoDatabaseService } from 'src/common/services/mongo-database.service'
 import { dateChecker } from 'src/utilities/helper-functions'
 import { TodoBaseBodyDto } from '../../types/dto/todo-base.dto'
 

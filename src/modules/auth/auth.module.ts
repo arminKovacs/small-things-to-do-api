@@ -9,10 +9,12 @@ import { UsersService } from 'src/modules/users/users.service'
 import { Todo, TodoSchema } from 'src/types/schemas/mongo/todo.schema'
 import { User, UserSchema } from 'src/types/schemas/mongo/users.schema'
 import { AuthService } from './auth.service'
-import { LocalStrategy } from './strategies/local.strategy'
 import { AuthController } from './auth.controller'
-import { MongoDatabaseService } from 'src/services/mongo-database/mongo-database.service'
+import { MongoDatabaseService } from 'src/common/services/mongo-database.service'
 import { JwtStrategy } from './strategies/jwt.strategy'
+import { RefreshTokenStrategy } from './strategies/refresh-token.strategy'
+import { APP_GUARD } from '@nestjs/core'
+import { ThrottlerGuard } from '@nestjs/throttler/dist/throttler.guard'
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { JwtStrategy } from './strategies/jwt.strategy'
       inject: [AppConfigurationService],
       useFactory: (appConfigService: AppConfigurationService) => ({
         secret: appConfigService.jwtSecretString,
-        signOptions: { expiresIn: '60s' },
+        signOptions: { expiresIn: '15m' },
       }),
     }),
     MongooseModule.forFeature([
@@ -32,7 +34,17 @@ import { JwtStrategy } from './strategies/jwt.strategy'
       { name: User.name, schema: UserSchema },
     ]),
   ],
-  providers: [AuthService, UsersService, LocalStrategy, JwtStrategy, MongoDatabaseService],
+  providers: [
+    AuthService,
+    UsersService,
+    JwtStrategy,
+    RefreshTokenStrategy,
+    MongoDatabaseService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
   controllers: [AuthController],
 })
-export class AuthModule { }
+export class AuthModule {}

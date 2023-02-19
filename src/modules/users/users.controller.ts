@@ -1,27 +1,22 @@
-import { Controller, Post, Body } from '@nestjs/common'
-import { hash } from 'bcrypt'
-import { AjvValidationPipe } from 'src/pipes/AjvValidationPipe'
-import { UserDto } from 'src/types/dto/user-base.dto'
+import { Controller, Param, Patch, UseGuards } from '@nestjs/common'
+import { Body } from '@nestjs/common/decorators'
+import { AjvValidationPipe } from 'src/common/pipes/AjvValidationPipe'
+import { userIdPathSchema } from 'src/types/schemas/json-schemas/user-id.path.schema'
 import { userBaseBodySchema } from 'src/types/schemas/json-schemas/user-base.body.schema'
-import { UserLeanDocument } from 'src/types/schemas/mongo/users.schema'
+import { UserDto } from 'src/types/dto/user-base.dto'
 import { UsersService } from './users.service'
+import { AccessTokenGuard } from 'src/modules/auth/guards/access-token.guard'
 
-@Controller()
+@UseGuards(AccessTokenGuard)
+@Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
-  @Post('/register')
-  async createUser(
-    @Body(new AjvValidationPipe(userBaseBodySchema))
-    { username, password }: UserDto,
-  ): Promise<UserLeanDocument> {
-    const saltOrRounds = 10
-    const hashedPassword = await hash(password, saltOrRounds)
-    const createdUser = await this.usersService.create({
-      username,
-      password: hashedPassword,
-    })
-
-    return createdUser
+  @Patch(':userId')
+  update(
+    @Param('userId', new AjvValidationPipe(userIdPathSchema)) userId: string,
+    @Body(new AjvValidationPipe(userBaseBodySchema)) userBase: UserDto,
+  ) {
+    return this.usersService.updateUser(userId, userBase)
   }
 }

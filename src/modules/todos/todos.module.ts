@@ -3,7 +3,7 @@ import { TodosService } from './todos.service'
 import { TodosController } from './todos.controller'
 import { MongooseModule } from '@nestjs/mongoose'
 import { Todo, TodoSchema } from '../../types/schemas/mongo/todo.schema'
-import { MongoDatabaseService } from 'src/services/mongo-database/mongo-database.service'
+import { MongoDatabaseService } from 'src/common/services/mongo-database.service'
 import { User, UserSchema } from 'src/types/schemas/mongo/users.schema'
 
 @Module({
@@ -16,4 +16,4 @@ import { User, UserSchema } from 'src/types/schemas/mongo/users.schema'
   controllers: [TodosController],
   providers: [TodosService, MongoDatabaseService],
 })
-export class TodosModule { }
+export class TodosModule {}

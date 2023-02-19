@@ -7,7 +7,7 @@ export const userIdPathSchema: JSONSchema7 = {
   properties: {
     userId: {
       type: 'string',
-      format: 'email',
+      pattern: '^[a-fA-F0-9]{24}$',
     },
   },
 }

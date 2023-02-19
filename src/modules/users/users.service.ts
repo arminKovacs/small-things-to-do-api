@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { MongoDatabaseService } from 'src/services/mongo-database/mongo-database.service'
+import { MongoDatabaseService } from 'src/common/services/mongo-database.service'
+import { UpdateUserDto } from 'src/types/dto/update-user.dto'
 import { UserDto } from 'src/types/dto/user-base.dto'
 
 @Injectable()
@@ -27,9 +28,9 @@ export class UsersService {
     return createdUser
   }
 
-  async findUser(userName: string) {
+  async findUser(username: string) {
     const querriedUser = await this.databaseService
-      .findUser(userName)
+      .findUser(username)
       .catch((error) => {
         console.log(error)
         throw new HttpException(
@@ -38,13 +39,41 @@ export class UsersService {
         )
       })
 
-    if (!querriedUser) {
+    return querriedUser
+  }
+
+  async findUserById(userId: string) {
+    const querriedUser = await this.databaseService
+      .findUserById(userId)
+      .catch((error) => {
+        console.log(error)
+        throw new HttpException(
+          'Mongo database error while retrieving user.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        )
+      })
+
+    return querriedUser
+  }
+
+  async updateUser(userId: string, updateUserDto: UpdateUserDto) {
+    const updatedUser = await this.databaseService
+      .updateUser(userId, updateUserDto)
+      .catch((error) => {
+        console.log(error)
+        throw new HttpException(
+          'Mongo database error while retrieving user.',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        )
+      })
+
+    if (!updatedUser) {
       throw new HttpException(
         `Wrong email or user does not exist.`,
         HttpStatus.NOT_FOUND,
       )
     }
 
-    return querriedUser
+    return updatedUser
   }
 }

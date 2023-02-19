@@ -7,14 +7,17 @@ export type UserLeanDocument = User & { _id: Types.ObjectId }
 
 @Schema({ versionKey: false })
 export class User {
-  @Prop({ email: { validate: [isEmail, 'invalid email'] } })
-  userName: string
+  @Prop({ email: { validate: [isEmail, 'invalid email'] }, required: true })
+  username: string
+
+  @Prop({ required: true })
+  password: string
 
   @Prop()
-  password: string
+  refreshToken: string
 }
 
 export const UserSchema = SchemaFactory.createForClass(User).index(
-  { userName: 1 },
+  { username: 1 },
   { unique: true },
 )

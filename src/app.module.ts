@@ -5,6 +5,7 @@ import { AppConfigurationModule } from './infrastructure/configuration/app-confi
 import { AppConfigurationService } from './infrastructure/configuration/app-configuration.service'
 import { UsersModule } from './modules/users/users.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { ThrottlerModule } from '@nestjs/throttler'
 
 @Module({
   imports: [
@@ -20,6 +21,10 @@ import { AuthModule } from './modules/auth/auth.module'
         }
         return options
       },
+    }),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
     }),
     TodosModule,
     UsersModule,

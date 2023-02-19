@@ -13,6 +13,7 @@ import {
   UserLeanDocument,
 } from 'src/types/schemas/mongo/users.schema'
 import { UserDto } from 'src/types/dto/user-base.dto'
+import { UpdateUserDto } from 'src/types/dto/update-user.dto'
 
 @Injectable()
 export class MongoDatabaseService {
@@ -44,15 +45,11 @@ export class MongoDatabaseService {
   }
 
   async findTodo(_id: string): Promise<TodoLeanDocument | null> {
-    const todo = await this.todoModel.findById(_id).lean().exec()
-
-    return todo
+    return await this.todoModel.findById(_id).lean().exec()
   }
 
   async findUsersTodo(owner: string): Promise<TodoLeanDocument[] | null> {
-    const todos = await this.todoModel.find({ owner }).lean().exec()
-
-    return todos
+    return await this.todoModel.find({ owner }).lean().exec()
   }
 
   async deleteTodo(_id: string): Promise<TodoLeanDocument | null> {
@@ -65,8 +62,21 @@ export class MongoDatabaseService {
     return await createdUser.save()
   }
 
-  async findUser(userName: string): Promise<UserLeanDocument | null> {
-    const user = await this.userModel.findOne({ userName }).lean().exec()
-    return user
+  async findUser(username: string): Promise<UserLeanDocument | null> {
+    return await this.userModel.findOne({ username }).lean().exec()
+  }
+
+  async findUserById(_id: string): Promise<UserLeanDocument | null> {
+    return await this.userModel.findById(_id).lean().exec()
+  }
+
+  async updateUser(
+    userId: string,
+    updatedUserDto: UpdateUserDto,
+  ): Promise<UserLeanDocument | null> {
+    return await this.userModel
+      .findByIdAndUpdate(userId, updatedUserDto, { new: true })
+      .lean()
+      .exec()
   }
 }
