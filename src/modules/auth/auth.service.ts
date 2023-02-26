@@ -16,6 +16,7 @@ export class AuthService {
   async signup(user: UserDto) {
     const { password, username } = user
     const userExists = await this.usersService.findUser(username)
+
     if (userExists) {
       throw new HttpException(`User already exists.`, HttpStatus.BAD_REQUEST)
     }
@@ -40,7 +41,7 @@ export class AuthService {
     if (!retrievedUser) {
       throw new HttpException(
         `Wrong credentails or user does not exist.`,
-        HttpStatus.NOT_FOUND,
+        HttpStatus.BAD_REQUEST,
       )
     }
 
@@ -62,6 +63,7 @@ export class AuthService {
       retrievedUser._id.toString(),
       tokens.refreshToken,
     )
+
     return tokens
   }
 

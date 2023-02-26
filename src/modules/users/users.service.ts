@@ -12,12 +12,6 @@ export class UsersService {
       .createUser(user)
       .catch((error) => {
         console.log(error)
-        if (error.code === 11000) {
-          throw new HttpException(
-            'User already exists with this email.',
-            HttpStatus.CONFLICT,
-          )
-        }
 
         throw new HttpException(
           'Mongo database error while creating user.',
@@ -69,7 +63,7 @@ export class UsersService {
 
     if (!updatedUser) {
       throw new HttpException(
-        `Wrong email or user does not exist.`,
+        `User does not exist.`,
         HttpStatus.NOT_FOUND,
       )
     }

@@ -1,4 +1,4 @@
-import { Body, Controller, UseGuards, Post } from '@nestjs/common'
+import { Body, Controller, UseGuards, Post, HttpCode } from '@nestjs/common'
 import { Get } from '@nestjs/common/decorators/http/request-mapping.decorator'
 import { Req } from '@nestjs/common/decorators/http/route-params.decorator'
 import { AccessTokenGuard } from 'src/modules/auth/guards/access-token.guard'
@@ -7,17 +7,14 @@ import { AjvValidationPipe } from 'src/common/pipes/AjvValidationPipe'
 import { AuthRequest } from 'src/types/auth-request'
 import { UserDto } from 'src/types/dto/user-base.dto'
 import { userBaseBodySchema } from 'src/types/schemas/json-schemas/user-base.body.schema'
-import { UsersService } from '../users/users.service'
 import { AuthService } from './auth.service'
 
-@Controller('auth')
+@Controller()
 export class AuthController {
-  constructor(
-    private authService: AuthService,
-    private usersService: UsersService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   @Post('signup')
+  @HttpCode(201)
   async signUp(
     @Body(new AjvValidationPipe(userBaseBodySchema)) user: UserDto,
   ): Promise<Record<string, unknown>> {
