@@ -1,6 +1,6 @@
 import { Request } from 'express'
 
-export type AuthRequest = Request & {
+export type AuthRequest = Partial<Request> & {
   user: {
     sub: string
     username: string

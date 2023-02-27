@@ -103,8 +103,11 @@ describe('AuthService', () => {
       })
     })
 
-    it("should return error if password is invalid", async () => {
-      userService.findUser.mockResolvedValue({ ...retrievedUser, password: 'password' })
+    it('should return error if password is invalid', async () => {
+      userService.findUser.mockResolvedValue({
+        ...retrievedUser,
+        password: 'password',
+      })
 
       await service.signIn(userInput).catch((error) => {
         expect(error.response).toBe('Wrong credentails or user does not exist.')

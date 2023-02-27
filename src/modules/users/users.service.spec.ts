@@ -2,7 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { Types } from 'mongoose'
 import { MongoDatabaseService } from 'src/common/services/mongo-database.service'
 import { UserDto } from 'src/types/dto/user-base.dto'
-import { createMockFunctions, MockType } from 'src/utilities/unit-test-helper-functions'
+import {
+  createMockFunctions,
+  MockType,
+} from 'src/utilities/unit-test-helper-functions'
 import { UsersService } from './users.service'
 
 describe('UsersService', () => {
@@ -15,17 +18,17 @@ describe('UsersService', () => {
   const userDto: UserDto = {
     username,
     password: 'password',
-    refreshToken
+    refreshToken,
   }
   const retrievedUser = {
     _id: new Types.ObjectId(userId),
-    ...userDto
+    ...userDto,
   }
   const mockDatabaseService = createMockFunctions<MongoDatabaseService>(
     'createUser',
     'findUser',
     'findUserById',
-    'updateUser'
+    'updateUser',
   )
 
   beforeEach(async () => {
@@ -40,7 +43,8 @@ describe('UsersService', () => {
     }).compile()
 
     service = module.get<UsersService>(UsersService)
-    databaseService = module.get<MockType<MongoDatabaseService>>(MongoDatabaseService)
+    databaseService =
+      module.get<MockType<MongoDatabaseService>>(MongoDatabaseService)
   })
 
   describe('Create', () => {
@@ -75,7 +79,9 @@ describe('UsersService', () => {
       databaseService.findUser.mockRejectedValue('Mongo error')
 
       await service.findUser(username).catch((error) => {
-        expect(error.response).toBe('Mongo database error while retrieving user.')
+        expect(error.response).toBe(
+          'Mongo database error while retrieving user.',
+        )
         expect(error.status).toBe(500)
       })
     })
@@ -94,7 +100,9 @@ describe('UsersService', () => {
       databaseService.findUser.mockRejectedValue('Mongo error')
 
       await service.findUser(username).catch((error) => {
-        expect(error.response).toBe('Mongo database error while retrieving user.')
+        expect(error.response).toBe(
+          'Mongo database error while retrieving user.',
+        )
         expect(error.status).toBe(500)
       })
     })
@@ -113,7 +121,9 @@ describe('UsersService', () => {
       databaseService.updateUser.mockRejectedValue('Mongo error')
 
       await service.updateUser(userId, userDto).catch((error) => {
-        expect(error.response).toBe('Mongo database error while retrieving user.')
+        expect(error.response).toBe(
+          'Mongo database error while retrieving user.',
+        )
         expect(error.status).toBe(500)
       })
     })

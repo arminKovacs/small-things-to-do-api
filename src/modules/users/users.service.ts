@@ -62,10 +62,7 @@ export class UsersService {
       })
 
     if (!updatedUser) {
-      throw new HttpException(
-        `User does not exist.`,
-        HttpStatus.NOT_FOUND,
-      )
+      throw new HttpException(`User does not exist.`, HttpStatus.NOT_FOUND)
     }
 
     return updatedUser
