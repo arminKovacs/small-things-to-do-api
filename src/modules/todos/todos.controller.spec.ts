@@ -1,12 +1,21 @@
 import { INestApplication } from '@nestjs/common/interfaces'
 import { getConnectionToken, MongooseModule } from '@nestjs/mongoose'
 import { Test, TestingModule } from '@nestjs/testing'
-import { Connection, Types } from 'mongoose'
+import { Connection } from 'mongoose'
 import { MongoDatabaseService } from 'src/common/services/mongo-database.service'
 import { TodoBaseBodyDto } from 'src/types/dto/todo-base.dto'
-import { Todo, TodoLeanDocument, TodoSchema } from 'src/types/schemas/mongo/todo.schema'
+import {
+  Todo,
+  TodoLeanDocument,
+  TodoSchema,
+} from 'src/types/schemas/mongo/todo.schema'
 import { User, UserSchema } from 'src/types/schemas/mongo/users.schema'
-import { closeInMongoDbConnection, mockUserDto, mockGuard, rootMongooseTestModule } from 'src/utilities/unit-test-helper-functions'
+import {
+  closeInMongoDbConnection,
+  mockUserDto,
+  mockGuard,
+  rootMongooseTestModule,
+} from 'src/utilities/unit-test-helper-functions'
 import { AccessTokenGuard } from '../auth/guards/access-token.guard'
 import { TodosController } from './todos.controller'
 import { TodosService } from './todos.service'
@@ -36,7 +45,8 @@ describe('TodosController', () => {
       ],
       controllers: [TodosController],
       providers: [TodosService, MongoDatabaseService],
-    }).overrideGuard(AccessTokenGuard)
+    })
+      .overrideGuard(AccessTokenGuard)
       .useValue(mockGuard)
       .compile()
 
@@ -53,7 +63,7 @@ describe('TodosController', () => {
 
   it('should be protected by jwt auth', () => {
     const guards = Reflect.getMetadata('__guards__', TodosController)
-    const guard = new (guards[0])
+    const guard = new guards[0]()
     expect(guard).toBeInstanceOf(AccessTokenGuard)
   })
 
@@ -65,7 +75,9 @@ describe('TodosController', () => {
         .expect(201)
 
       expect.objectContaining<TodoLeanDocument>(response.body)
-      await database.deleteTodo((response.body as TodoLeanDocument)._id.toString())
+      await database.deleteTodo(
+        (response.body as TodoLeanDocument)._id.toString(),
+      )
     })
 
     it('should return error if wrong schema is sent as body', async () => {
@@ -78,9 +90,12 @@ describe('TodosController', () => {
     })
   })
 
-  describe('Find all user\'s todos', () => {
+  describe("Find all user's todos", () => {
     it('should return all todo items', async () => {
-      const createdTodo = await database.createTodo({ ...todoBase, title: 'new todo here' }, username)
+      const createdTodo = await database.createTodo(
+        { ...todoBase, title: 'new todo here' },
+        username,
+      )
       const response = await request(app.getHttpServer())
         .get('/todos')
         .expect(200)
@@ -90,7 +105,7 @@ describe('TodosController', () => {
       await database.deleteTodo(createdTodo._id.toString())
     })
 
-    it('should return empty todo list if user hasn\'t created any yet', async () => {
+    it("should return empty todo list if user hasn't created any yet", async () => {
       const response = await request(app.getHttpServer())
         .get('/todos')
         .expect(200)

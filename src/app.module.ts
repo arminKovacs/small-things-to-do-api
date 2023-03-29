@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common'
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose'
 import { TodosModule } from './modules/todos/todos.module'
 import { AppConfigurationModule } from './infrastructure/configuration/app-configuration.module'
@@ -6,6 +6,7 @@ import { AppConfigurationService } from './infrastructure/configuration/app-conf
 import { UsersModule } from './modules/users/users.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { ThrottlerModule } from '@nestjs/throttler'
+import { LoggerMiddleware } from './common/middleware/logger.middleware'
 
 @Module({
   imports: [
@@ -31,4 +32,8 @@ import { ThrottlerModule } from '@nestjs/throttler'
     AuthModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*')
+  }
+}

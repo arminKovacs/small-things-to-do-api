@@ -8,6 +8,7 @@ import { AuthRequest } from 'src/types/auth-request'
 import { UserDto } from 'src/types/dto/user-base.dto'
 import { userBaseBodySchema } from 'src/types/schemas/json-schemas/user-base.body.schema'
 import { AuthService } from './auth.service'
+import { ResponseTokens } from 'src/types/reponseTokens'
 
 @Controller()
 export class AuthController {
@@ -17,7 +18,7 @@ export class AuthController {
   @HttpCode(201)
   async signUp(
     @Body(new AjvValidationPipe(userBaseBodySchema)) user: UserDto,
-  ): Promise<Record<string, unknown>> {
+  ): Promise<ResponseTokens> {
     return this.authService.signup(user)
   }
 

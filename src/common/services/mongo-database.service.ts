@@ -62,6 +62,10 @@ export class MongoDatabaseService {
     return await createdUser.save()
   }
 
+  async deleteUser(username: string): Promise<UserLeanDocument | null> {
+    return await this.userModel.findOneAndDelete({ username }).lean().exec()
+  }
+
   async findUser(username: string): Promise<UserLeanDocument | null> {
     return await this.userModel.findOne({ username }).lean().exec()
   }

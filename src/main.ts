@@ -5,7 +5,7 @@ import helmet from 'helmet'
 
 async function bootstrap() {
   config()
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, { logger: console })
   app.use(helmet())
   await app.listen(3001)
 }

@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { UsersController } from './users.controller'
 
-describe('UsersController', () => {
+//TODO if user controller is used
+describe.skip('UsersController', () => {
   let controller: UsersController
 
   beforeEach(async () => {

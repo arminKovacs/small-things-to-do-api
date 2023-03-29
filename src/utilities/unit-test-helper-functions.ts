@@ -22,21 +22,22 @@ export const createMockFunctions = <T>(...functionsToMock: (keyof T)[]) => {
 export const mockUserDto: UserDto = {
   username: 'test@testmail.com',
   password: 'password',
-  refreshToken: 'jwt.refresh.token'
+  refreshToken: 'jwt.refresh.token',
 }
 
 let mongodb: MongoMemoryServer
 
-export const rootMongooseTestModule = (options: MongooseModuleOptions = {}) => MongooseModule.forRootAsync({
-  useFactory: async () => {
-    mongodb = await MongoMemoryServer.create()
-    const mongoUri = mongodb.getUri()
-    return {
-      uri: mongoUri,
-      ...options
-    }
-  }
-})
+export const rootMongooseTestModule = (options: MongooseModuleOptions = {}) =>
+  MongooseModule.forRootAsync({
+    useFactory: async () => {
+      mongodb = await MongoMemoryServer.create()
+      const mongoUri = mongodb.getUri()
+      return {
+        uri: mongoUri,
+        ...options,
+      }
+    },
+  })
 
 export const closeInMongoDbConnection = async () => {
   if (mongodb) await mongodb.stop()
@@ -49,8 +50,8 @@ export const mockGuard: CanActivate = {
     req.user = {
       refreshToken: mockUserDto.refreshToken,
       sub: now,
-      username: mockUserDto.username
+      username: mockUserDto.username,
     }
     return true
-  }
+  },
 }
