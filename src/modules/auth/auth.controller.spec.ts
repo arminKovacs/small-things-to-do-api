@@ -23,6 +23,7 @@ import { AppConfigurationModule } from 'src/infrastructure/configuration/app-con
 import { JwtModule } from '@nestjs/jwt'
 import { AppConfigurationService } from 'src/infrastructure/configuration/app-configuration.service'
 import * as request from 'supertest'
+import { hash } from 'bcrypt'
 
 describe('AuthController', () => {
   let app: INestApplication
@@ -30,6 +31,7 @@ describe('AuthController', () => {
   let database: MongoDatabaseService
 
   const { username, password } = mockUserDto
+  const hashedPassword = (async () => await hash(password, 10))()
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -68,6 +70,7 @@ describe('AuthController', () => {
     connection = await module.get(getConnectionToken())
     app = module.createNestApplication()
     await app.init()
+    await database.createUser({ username, password: (await hashedPassword).toString() })
   })
 
   afterEach(async () => {
@@ -79,13 +82,86 @@ describe('AuthController', () => {
     it('should return tokens on success', async () => {
       const response = await request(app.getHttpServer())
         .post('/signup')
-        .send({ username, password })
+        .send({ username: 'new@user.com', password })
         .expect(201)
 
       expect(response.text).toContain('accessToken')
       expect(response.text).toContain('refreshToken')
 
-      await database.deleteUser(username)
+      await database.deleteUser('new user')
+    })
+
+    it('should return error if wrong schema is sent', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/signup')
+        .send({ username, password, additionalField: '' })
+        .expect(400)
+
+      expect(response.body.message).toContain('Validation failed for body')
+    })
+  })
+
+  describe('Signin', () => {
+    it('should return tokens on success', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/signin')
+        .send({ username, password })
+        .expect(200)
+
+      expect(response.text).toContain('accessToken')
+      expect(response.text).toContain('refreshToken')
+    })
+
+    it('should return error if wrong schema is sent', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/signin')
+        .send({ username, password, additionalField: '' })
+        .expect(400)
+
+      expect(response.body.message).toContain('Validation failed for body')
+    })
+
+    it('should return error if user does not exist', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/signin')
+        .send({ username: 'john@test.com', password })
+        .expect(400)
+
+      expect(response.body.message).toContain('Wrong credentails or user does not exist.')
+    })
+  })
+
+  describe('Logout', () => {
+    let token
+
+    beforeEach(async () => {
+      const response = await request(app.getHttpServer())
+        .post('/signin')
+        .send({ username, password })
+        .expect(200)
+      token = 'todo from response'
+    })
+
+    it('should be protected by jwt auth', () => {
+      const guards = Reflect.getMetadata('__guards__', AuthController)
+      const guard = new guards[0]()
+      expect(guard).toBeInstanceOf(AccessTokenGuard)
+    })
+
+    it('should set refresh token in db to undefined', async () => {
+      await request(app.getHttpServer())
+        .get('/logout')
+        .send({ username, password })
+        .expect(200)
+    })
+
+    it('should return error if user does not exist', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/logout')
+        .send({ username: 'john@test.com', password })
+        .expect(400)
+
+      expect(response.body.message).toContain('Wrong credentails or user does not exist.')
     })
   })
 })

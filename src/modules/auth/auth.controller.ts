@@ -23,10 +23,11 @@ export class AuthController {
   }
 
   @Post('signin')
+  @HttpCode(200)
   async signin(
-    @Body(new AjvValidationPipe(userBaseBodySchema)) authData: UserDto,
+    @Body(new AjvValidationPipe(userBaseBodySchema)) user: UserDto,
   ) {
-    return this.authService.signIn(authData)
+    return this.authService.signIn(user)
   }
 
   @UseGuards(AccessTokenGuard)
