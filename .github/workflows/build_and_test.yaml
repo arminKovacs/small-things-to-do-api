@@ -1,0 +1,38 @@
+name: Build and Test
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+env:
+  MONGODB_CONNECTION: 'forTest'
+  JWT_SECRET: 'testSecret'
+  JWT_REFRESH_SECRET: 'testRefresh'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+
+    - name: Install dependencies
+      run: yarn --frozen-lockfile
+
+    - name: Format code
+      run: yarn format
+
+    - name: Fix lint errors
+      run: yarn fix-lint-errors
+
+    - name: Build
+      run: yarn build
+
+    - name: Run Tests
+      run: yarn test

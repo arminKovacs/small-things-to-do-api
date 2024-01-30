@@ -24,9 +24,7 @@ export class AuthController {
 
   @Post('signin')
   @HttpCode(200)
-  async signin(
-    @Body(new AjvValidationPipe(userBaseBodySchema)) user: UserDto,
-  ) {
+  async signin(@Body(new AjvValidationPipe(userBaseBodySchema)) user: UserDto) {
     return this.authService.signIn(user)
   }
 
