@@ -70,7 +70,10 @@ describe('AuthController', () => {
     connection = await module.get(getConnectionToken())
     app = module.createNestApplication()
     await app.init()
-    await database.createUser({ username, password: (await hashedPassword).toString() })
+    await database.createUser({
+      username,
+      password: (await hashedPassword).toString(),
+    })
   })
 
   afterEach(async () => {
@@ -127,7 +130,9 @@ describe('AuthController', () => {
         .send({ username: 'john@test.com', password })
         .expect(400)
 
-      expect(response.body.message).toContain('Wrong credentails or user does not exist.')
+      expect(response.body.message).toContain(
+        'Wrong credentails or user does not exist.',
+      )
     })
   })
 
@@ -162,7 +167,9 @@ describe('AuthController', () => {
         .send({ username: 'john@test.com', password })
         .expect(400)
 
-      expect(response.body.message).toContain('Wrong credentails or user does not exist.')
+      expect(response.body.message).toContain(
+        'Wrong credentails or user does not exist.',
+      )
     })
   })
 })

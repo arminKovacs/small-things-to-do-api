@@ -2,7 +2,7 @@ name: Build and Test
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main]
 
 env:
   MONGODB_CONNECTION: 'forTest'
